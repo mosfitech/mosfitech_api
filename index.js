@@ -10,27 +10,31 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-const dataOksigen = require("./app/routes/bantucarioksigen");
-const auth = require("./app/routes/auth/index");
-const verifyToken = require("./app/configs/verifyToken");
-const shop = require("./app/routes/shop");
-const resCAPTCHA = require("./app/configs/captcha");
-const info = require("./app/routes/info");
+var mqttHandler = require("./app/routes/mqtt_handler");
+var mqttClient = new mqttHandler();
+
+let topicBattray = "mytopic/battray";
+let topicLocation = "mytopic/location"
+
+mqttClient.connect();
+mqttClient.dataBattray(topicBattray);
+mqttClient.dataLocation(topicLocation);
+
+const moPartner = require("./app/routes/mopartner");
+const kits = require("./app/routes/kits");
 
 app.get("/", (req, res) => {
   res.json([
     {
-      message: "Welcome to api bantucari",
+      message: "Welcome to api mosfitech",
     },
   ]);
 });
 
-app.use("/dataoksigen", dataOksigen);
-app.use("/auth", auth);
-app.use("/verifyToken", verifyToken);
-app.use("/product", shop);
-app.use("/captcha", resCAPTCHA);
-app.use("/info", info);
+// const verifyToken = require("../configs/verifyToken");
+app.use("/mopartner", moPartner);
+app.use("/kits", kits);
+
 app.listen(port, () => {
   console.log(`app listening at http://localhost:${port}`);
 });
