@@ -9,7 +9,7 @@ mongoose.connect(process.env.MONGOURI, {
 const PartnerSchema = mongoose.Schema({
   _id: {
     type: String,
-    required: true
+    required: true,
   },
   business_name: {
     type: String,
@@ -43,6 +43,7 @@ const PartnerSchema = mongoose.Schema({
   },
   added_at: {
     type: Date,
+    default: Date.now,
   },
   updated_at: {
     type: Date,

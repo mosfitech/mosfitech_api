@@ -8,9 +8,11 @@ router.post("/", async (req, res) => {
     owner_email: req.body.owner_email,
     category: req.body.category,
     type: req.body.type,
-    state_kit: req.body.state_kit,
+    rental_status: req.body.rental_status,
+    warning_status: req.body.warning_status,
     battray: req.body.battray,
     rental_time: req.body.rental_time,
+    price: req.body.price,
     latitude_kit: req.body.latitude_kit,
     longitude_kit: req.body.longitude_kit,
     latest_rent_username: req.body.latest_rent_username,
@@ -84,10 +86,10 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:email", async (req, res) => {
   try {
-    const dataKitsDetail = await KitsModel.findById({
-      _id: req.params.id,
+    const dataKitsDetail = await KitsModel.find({
+      owner_email: req.params.email,
     });
     res.json(dataKitsDetail);
   } catch (error) {

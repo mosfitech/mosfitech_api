@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const OksigenModel = require("../models/OksigenModel");
 const PartnerModel = require("../models/PartnerModel");
 
 router.post("/", async (req, res) => {
