@@ -30,13 +30,13 @@ app.get("/", (req, res) => {
     },
   ]);
 });
-app.put("/rental", (req, res) => {
+app.put("/kits/publish/", (req, res) => {
   mqttClient.rental({
+    uuid: req.body.uuid,
     rental_status: req.body.rental_status,
   });
 });
 
-// const verifyToken = require("../configs/verifyToken");
 app.use("/mopartner", mopartners);
 app.use("/kits", kits);
 

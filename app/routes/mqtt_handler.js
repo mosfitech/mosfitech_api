@@ -162,12 +162,12 @@ class MqttHandler {
   }
 
   // Sends a mqtt message to topic: mytopic
-  rental({ rental_status }) {
+  rental({ uuid, rental_status }) {
     // console.log(id_kit)
     const data = {
       rental_status: rental_status,
     };
-    this.mqttClient.publish("rental/12312412312", JSON.stringify(data));
+    this.mqttClient.publish(`rental/${uuid}`, JSON.stringify(data));
   }
 }
 
