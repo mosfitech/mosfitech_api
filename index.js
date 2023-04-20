@@ -14,8 +14,8 @@ app.use(cookieParser());
 var mqttHandler = require("./app/routes/mqtt_handler");
 var mqttClient = new mqttHandler();
 
-let topicBattray = "mytopic/battray";
-let topicLocation = "mytopic/location";
+let topicBattray = "rental/battray";
+let topicLocation = "rental/location";
 
 mqttClient.dataBattray(topicBattray);
 mqttClient.dataLocation(topicLocation);
