@@ -5,7 +5,7 @@ name: CD
 # Controls when the workflow will run
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -14,16 +14,15 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-    - name: deploy using ssh
-      uses: appleboy/ssh-action@master
-      with:
-        host: 64.227.100.181
-        username: root
-        password: ${{secrets.PASSWORD}}
-        port: 22
-        script: 
-         cd ~/backend-bantucarioksigen
-         git pull origin master
-         git status
-         npm install
-         pm2 restart backend-bantucarioksigen
+      - name: deploy using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: 192.168.42.199
+          username: root
+          password: ${{secrets.PASSWORD}}
+          port: 22
+          script: cd ~/mosfitech_api
+            git pull origin master
+            git status
+            npm install
+            pm2 restart mosfitech_api

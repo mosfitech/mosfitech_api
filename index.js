@@ -34,6 +34,14 @@ app.put("/kits/publish/", (req, res) => {
   mqttClient.rental({
     uuid: req.body.uuid,
     rental_status: req.body.rental_status,
+    warning_status: req.body.warning_status,
+  });
+});
+
+app.put("/kits/publish/warning/", (req, res) => {
+  mqttClient.warning({
+    uuid: req.body.uuid,
+    warning_status: req.body.warning_status,
   });
 });
 

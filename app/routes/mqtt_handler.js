@@ -40,7 +40,7 @@ class MqttHandler {
     this.mqttClient.on("message", async (topic, message) => {
       let data = message.toString();
       const update_data = await axios
-        .put(`http://localhost:3005/kits/12312412312/`, {
+        .put(`http://localhost:3006/kits/battray/861878005156499`, {
           battray: data,
         })
         .then((result) => {
@@ -80,8 +80,9 @@ class MqttHandler {
       let dataArray = data.split(",");
       let latitude = dataArray[0];
       let longitude = dataArray[1];
+      console.log(latitude, longitude);
       const update_data = await axios
-        .put(`http://localhost:3006/kits/12312412312/`, {
+        .put(`http://localhost:3006/kits/location/861878005156499/`, {
           latitude_kit: latitude,
           longitude_kit: longitude,
         })
@@ -124,22 +125,40 @@ class MqttHandler {
                 if (locations.length === 0) {
                   console.log(" warning, keluar zona penyewaan");
                   const warningUpdate = axios
-                    .put(`http://localhost:3006/kits/12312412312/`, {
-                      warning: 1,
-                    })
+                    .put(
+                      `http://localhost:3006/kits/warning/861878005156499/`,
+                      {
+                        warning_status: 1,
+                      }
+                    )
                     .then((result) => {
-                      console.log(result.data);
+                      console.log("done", result.data);
+                      const warningPub = axios.put(
+                        `http://localhost:3006/kits/publish/warning/`,
+                        {
+                          warning_status: 1,
+                        }
+                      );
                     })
                     .catch((err) => {
                       console.log(err);
                     });
                 } else {
                   const warningUpdate = axios
-                    .put(`http://localhost:3006/kits/12312412312/`, {
-                      warning: 0,
-                    })
+                    .put(
+                      `http://localhost:3006/kits/warning/861878005156499/`,
+                      {
+                        warning_status: 0,
+                      }
+                    )
                     .then((result) => {
                       console.log(result.data);
+                      const warningPub = axios.put(
+                        `http://localhost:3006/kits/publish/warning/`,
+                        {
+                          warning_status: 0,
+                        }
+                      );
                     })
                     .catch((err) => {
                       console.log(err);
@@ -162,12 +181,23 @@ class MqttHandler {
   }
 
   // Sends a mqtt message to topic: mytopic
-  rental({ uuid, rental_status }) {
+  rental({ uuid, rental_status, warning_status }) {
     // console.log(id_kit)
-    const data = {
-      rental_status: rental_status,
-    };
-    this.mqttClient.publish(`rental/${uuid}`, JSON.stringify(data));
+    // const data = {
+    //   rental_status: rental_status,
+    //   warning_status: warning_status,
+    // };
+    this.mqttClient.publish(`rental/${uuid}`, JSON.stringify(rental_status));
+  }
+
+  warning({ uuid, warning_status }) {
+    // console.log(id_kit)
+    // const data = {
+    //   rental_status: rental_status,
+    //   warning_status: warning_status,
+    // };
+    console.log("warning nih", warning_status);
+    this.mqttClient.publish(`rental/warning`, JSON.stringify(warning_status));
   }
 }
 

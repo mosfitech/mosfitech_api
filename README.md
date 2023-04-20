@@ -37,9 +37,6 @@ It is complex, that is why we recommend using Docker.
    - `web` container which tries to get a certificate with Lets Encrypt.
    - `mqtt` EMQ + management interface on http://localhost:18083 _admin:public_
    - `mqtt-task` a rake task which subscribes to the `mqtt` service
-   - `sidekiq`
-   - `kairos` - Time series database on Cassandra
-   - `cassandra-1` - Stores the data
 
    Start ALL of them (not recommended) with:
 

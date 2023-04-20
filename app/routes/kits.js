@@ -102,6 +102,66 @@ router.get("/:email", async (req, res) => {
     });
   }
 });
+// mqtt
+// warning status
+router.put("/warning/:id", async (req, res) => {
+  try {
+    const dataKitsUpdate = await KitsModel.updateOne(
+      { _id: req.params.id },
+      {
+        warning_status: req.body.warning_status,
+      }
+    );
+    res.json({
+      status: 200,
+      message: dataKitsUpdate,
+    });
+  } catch (error) {
+    res.json({
+      message: error,
+    });
+  }
+});
+// location
+router.put("/location/:id", async (req, res) => {
+  try {
+    const dataKitsUpdate = await KitsModel.updateOne(
+      { _id: req.params.id },
+      {
+        latitude_kit: req.body.latitude_kit,
+        longitude_kit: req.body.longitude_kit,
+      }
+    );
+    res.json({
+      status: 200,
+      message: dataKitsUpdate,
+    });
+  } catch (error) {
+    res.json({
+      message: error,
+    });
+  }
+});
+
+// battray
+router.put("/battray/:id", async (req, res) => {
+  try {
+    const dataKitsUpdate = await KitsModel.updateOne(
+      { _id: req.params.id },
+      {
+        battray: req.body.battray,
+      }
+    );
+    res.json({
+      status: 200,
+      message: dataKitsUpdate,
+    });
+  } catch (error) {
+    res.json({
+      message: error,
+    });
+  }
+});
 
 // rental
 router.put("/rental/:id", async (req, res) => {
