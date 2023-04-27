@@ -3,7 +3,9 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/2ac767745186038373f5/maintainability)](https://codeclimate.com/github/mosfitech/mosfitech_api/maintainability)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)]()
 
-## [Documentation](https://github.com/mosfitech)
+## Documentation
+
+See [MOSFITECH API DOCS](DEVELOPER.md) for detailed instructions on how to get started with our project.
 
 ## Installing Locally
 

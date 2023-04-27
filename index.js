@@ -26,7 +26,7 @@ const kits = require("./app/routes/kits");
 app.get("/", (req, res) => {
   res.json([
     {
-      message: "Welcome to api mosfitech",
+      message: "Welcome to api mosfitech, documentation cek: https://github.com/mosfitech/mosfitech_api/wiki/",
     },
   ]);
 });
