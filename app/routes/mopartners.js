@@ -93,4 +93,17 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.get("/info/:email", async (req, res) => {
+  try {
+    const dataPartnerDetail = await PartnerModel.find({
+      email: req.params.email,
+    });
+    res.json(dataPartnerDetail);
+  } catch (error) {
+    res.json({
+      message: error,
+    });
+  }
+});
+
 module.exports = router;

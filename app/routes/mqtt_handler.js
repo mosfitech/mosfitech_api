@@ -39,9 +39,12 @@ class MqttHandler {
     // When a message arrives, console.log it
     this.mqttClient.on("message", async (topic, message) => {
       let data = message.toString();
+      let dataArray = data.split(",");
+      let uuid = dataArray[0];
+      let battray = dataArray[1];
       const update_data = await axios
-        .put(`http://localhost:3006/kits/battray/861878005156499`, {
-          battray: data,
+        .put(`http://localhost:3006/kits/battray/${uuid}`, {
+          battray: battray,
         })
         .then((result) => {
           console.log(result);
@@ -78,31 +81,49 @@ class MqttHandler {
     this.mqttClient.on("message", async (topic, message) => {
       let data = message.toString();
       let dataArray = data.split(",");
-      let latitude = dataArray[0];
-      let longitude = dataArray[1];
-      console.log(latitude, longitude);
+      let uuid = dataArray[0];
+      let latitude = dataArray[1];
+      let longitude = dataArray[2];
+      // console.log(latitude, longitude);
+      let owner_email = "";
+      let radius_rental = 0;
+      console.log(uuid.toString());
+      const get_owner_email = await axios
+        .get(`http://localhost:3006/kits/rental/${uuid}`)
+        .then((result) => {
+          owner_email = result.data.owner_email;
+          console.log(owner_email);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      const get_owner_data = await axios
+        .get(`http://localhost:3006/mopartner/info/${owner_email}`)
+        .then((result) => {
+          rental.addLocation(
+            `${result.data[0].business_name}`,
+            {
+              latitude: `${parseFloat(result.data[0].latitude_shelter)}`,
+              longitude: `${parseFloat(result.data[0].longitude_shelter)}`,
+            },
+            function (err, reply) {
+              if (err) console.error(err);
+              else {
+                radius_rental = parseFloat(result.data[0].radius_rental);
+                console.log("added locations:", reply);
+              }
+            }
+          );
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       const update_data = await axios
-        .put(`http://localhost:3006/kits/location/861878005156499/`, {
+        .put(`http://localhost:3006/kits/location/${uuid}`, {
           latitude_kit: latitude,
           longitude_kit: longitude,
         })
         .then((result) => {
-          // set location shealter partner -5.3582643,105.3066098
-          // const locationSetDisaster = {
-          //   Disaster1: {
-          //     latitude: latitude,
-          //     longitude: longitude,
-          //   },
-          // };
-          rental.addLocation(
-            "Rental1",
-            { latitude: -5.3582643, longitude: 105.3066098 },
-            function (err, reply) {
-              if (err) console.error(err);
-              else console.log("added locations:", reply);
-            }
-          );
-
           // init
           const options = {
             withCoordinates: true, // Will provide coordinates with locations, default false
@@ -117,7 +138,7 @@ class MqttHandler {
           // look for all points within ~5000m.
           rental.nearby(
             { latitude: latitude, longitude: longitude },
-            1000,
+            radius_rental,
             options,
             function (err, locations) {
               if (err) console.error(err);
@@ -125,17 +146,15 @@ class MqttHandler {
                 if (locations.length === 0) {
                   console.log(" warning, keluar zona penyewaan");
                   const warningUpdate = axios
-                    .put(
-                      `http://localhost:3006/kits/warning/861878005156499/`,
-                      {
-                        warning_status: 1,
-                      }
-                    )
+                    .put(`http://localhost:3006/kits/warning/${uuid}/`, {
+                      warning_status: 1,
+                    })
                     .then((result) => {
                       console.log("done", result.data);
                       const warningPub = axios.put(
                         `http://localhost:3006/kits/publish/warning/`,
                         {
+                          uuid: uuid,
                           warning_status: 1,
                         }
                       );
@@ -145,17 +164,15 @@ class MqttHandler {
                     });
                 } else {
                   const warningUpdate = axios
-                    .put(
-                      `http://localhost:3006/kits/warning/861878005156499/`,
-                      {
-                        warning_status: 0,
-                      }
-                    )
+                    .put(`http://localhost:3006/kits/warning/${uuid}/`, {
+                      warning_status: 0,
+                    })
                     .then((result) => {
                       console.log(result.data);
                       const warningPub = axios.put(
                         `http://localhost:3006/kits/publish/warning/`,
                         {
+                          uuid: uuid,
                           warning_status: 0,
                         }
                       );
@@ -196,8 +213,11 @@ class MqttHandler {
     //   rental_status: rental_status,
     //   warning_status: warning_status,
     // };
-    console.log("warning nih", warning_status);
-    this.mqttClient.publish(`rental/warning`, JSON.stringify(warning_status));
+    // console.log("warning nih", warning_status);
+    this.mqttClient.publish(
+      `rental/warning/${uuid}`,
+      JSON.stringify(warning_status)
+    );
   }
 }
 
