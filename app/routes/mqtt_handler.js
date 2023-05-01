@@ -15,12 +15,17 @@ const rental = geo.addSet("rental");
 class MqttHandler {
   constructor() {
     this.mqttClient = null;
-    this.host = "mqtt://test.mosquitto.org";
+    this.host = "mqtt://203.194.112.89";
+    this.config = {
+      username: "bikebikeaja",
+      password: "Bikebike4ja",
+    };
+    
   }
 
   dataBattray(topic) {
     // Connect mqtt with credentials (in case of needed, otherwise we can omit 2nd param)
-    this.mqttClient = mqtt.connect(this.host);
+    this.mqttClient = mqtt.connect(this.host, this.config);
 
     // Mqtt error calback
     this.mqttClient.on("error", (err) => {
@@ -61,7 +66,7 @@ class MqttHandler {
 
   dataLocation(topic) {
     // Connect mqtt with credentials (in case of needed, otherwise we can omit 2nd param)
-    this.mqttClient = mqtt.connect(this.host);
+    this.mqttClient = mqtt.connect(this.host, this.config);
 
     // Mqtt error calback
     this.mqttClient.on("error", (err) => {
