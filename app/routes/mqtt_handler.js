@@ -15,12 +15,11 @@ const rental = geo.addSet("rental");
 class MqttHandler {
   constructor() {
     this.mqttClient = null;
-    this.host = "mqtt://203.194.112.89";
+    this.host = process.env.MQTT_HOST;
     this.config = {
-      username: "bikebikeaja",
-      password: "Bikebike4ja",
+      username: process.env.MQTT_USERNAME,
+      password: process.env.MQTT_PASS,
     };
-    
   }
 
   dataBattray(topic) {
@@ -203,12 +202,20 @@ class MqttHandler {
   }
 
   // Sends a mqtt message to topic: mytopic
-  rental({ uuid, rental_status, warning_status }) {
-    // console.log(id_kit)
+  rental({ uuid, rental_status }) {
     // const data = {
     //   rental_status: rental_status,
     //   warning_status: warning_status,
     // };
+    this.mqttClient = mqtt.connect(this.host, this.config);
+    this.mqttClient.on("error", (err) => {
+      console.log(err);
+      this.mqttClient.end();
+    });
+    this.mqttClient.on("connect", () => {
+      console.log(`mqtt publish rental connected`);
+    });
+
     this.mqttClient.publish(`rental/${uuid}`, JSON.stringify(rental_status));
   }
 
@@ -219,6 +226,10 @@ class MqttHandler {
     //   warning_status: warning_status,
     // };
     // console.log("warning nih", warning_status);
+    this.mqttClient = mqtt.connect(this.host, this.config);
+    this.mqttClient.on("connect", () => {
+      console.log(`mqtt publish warning connected`);
+    });
     this.mqttClient.publish(
       `rental/warning/${uuid}`,
       JSON.stringify(warning_status)

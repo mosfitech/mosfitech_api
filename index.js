@@ -26,7 +26,9 @@ const kits = require("./app/routes/kits");
 app.get("/", (req, res) => {
   res.json([
     {
-      message: "Welcome to api mosfitech, documentation cek: https://github.com/mosfitech/mosfitech_api/wiki/",
+      status: 200,
+      message:
+        "Welcome to api mosfitech, documentation cek: https://github.com/mosfitech/mosfitech_api/wiki/",
     },
   ]);
 });
@@ -34,8 +36,8 @@ app.put("/kits/publish/", (req, res) => {
   mqttClient.rental({
     uuid: req.body.uuid,
     rental_status: req.body.rental_status,
-    warning_status: req.body.warning_status,
   });
+  res.json([{ status: 200, message: "already to rental" }]);
 });
 
 app.put("/kits/publish/warning/", (req, res) => {
@@ -43,6 +45,7 @@ app.put("/kits/publish/warning/", (req, res) => {
     uuid: req.body.uuid,
     warning_status: req.body.warning_status,
   });
+  res.json([{ status: 200, message: "already to rental" }]);
 });
 
 app.use("/mopartner", mopartners);
